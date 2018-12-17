@@ -1,13 +1,16 @@
 import * as React from "react";
 import { RegisterView } from "./ui/RegisterView";
+import { RegisterController } from '@abb/controller';
 
 export class RegisterConnector extends React.PureComponent {
-  dummySubmit = async (values: any) => {
-    console.log(values);
-    return null;
-  };
-
+ 
   render() {
-    return <RegisterView submit={this.dummySubmit} />;
+    return (
+      <React.Fragment>
+        <RegisterController>
+          {({ submit }: {submit: any}) => <RegisterView submit={submit} />}
+        </RegisterController>
+      </React.Fragment>
+    );
   }
 }

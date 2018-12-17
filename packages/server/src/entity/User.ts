@@ -1,20 +1,22 @@
-import * as bcrypt from "bcryptjs";
 import {
   Entity,
   Column,
-  BaseEntity,
   PrimaryGeneratedColumn,
+  BaseEntity,
   BeforeInsert
 } from "typeorm";
+import * as bcrypt from "bcryptjs";
 
 @Entity("users")
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid") id: string;
+  @PrimaryGeneratedColumn()
+  id: string;
 
-  @Column("varchar", { length: 255 })
-  email: string;
+  @Column("varchar", { length: 255, nullable: true })
+  email: string | null;
 
-  @Column("text") password: string;
+  @Column("text", { nullable: true })
+  password: string;
 
   @Column("boolean", { default: false })
   confirmed: boolean;
@@ -22,8 +24,12 @@ export class User extends BaseEntity {
   @Column("boolean", { default: false })
   forgotPasswordLocked: boolean;
 
+  @Column("text", { nullable: true }) googleId: string | null;
+
   @BeforeInsert()
-  async hashPasswordBeforeInsert() {
-    this.password = await bcrypt.hash(this.password, 10);
+  async hashPassword() {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
   }
 }

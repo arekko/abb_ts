@@ -1,28 +1,34 @@
+// import { User } from "./entity/User";
+import { redisSessionPrefix } from "./constants";
 import "reflect-metadata";
+
 import "dotenv/config";
-import { GraphQLServer } from "graphql-yoga";
+
+// import * as dotenv from 'dotenv';
+// dotenv.config()
+
 import * as session from "express-session";
 import * as connectRedis from "connect-redis";
 import * as RateLimit from "express-rate-limit";
-import * as RateLimitRedisStore from "rate-limit-redis";
+import * as RateLimitRadisStore from "rate-limit-redis";
+
+// import * as passport from "passport";
+// import * as GoogleStrategy from "passport-google-oauth20";
 
 import { redis } from "./redis";
-import { createTypeormConn } from "./utils/createTypeormConn";
 import { confirmEmail } from "./routes/confirmEmail";
+import { createTypeormConnection } from "./utils/createTypeormConnection";
+import { GraphQLServer } from "graphql-yoga";
 import { genSchema } from "./utils/genSchema";
-import { redisSessionPrefix } from "./constants";
-import { createTestConn } from "./testUtils/createTestConn";
 
-const SESSION_SECRET = "ajslkjalksjdfkl";
-const RedisStore = connectRedis(session as any);
+const RedisStore = connectRedis(session);
+const SESSION_SECRET = "fasdfasdfasdf";
 
 export const startServer = async () => {
-  if (process.env.NODE_ENV === "test") {
-    await redis.flushall();
-  }
+  console.log(process.env.GOOGLE_CLIENT_ID);
 
   const server = new GraphQLServer({
-    schema: genSchema() as any,
+    schema: genSchema(),
     context: ({ request }) => ({
       redis,
       url: request.protocol + "://" + request.get("host"),
@@ -33,12 +39,11 @@ export const startServer = async () => {
 
   server.express.use(
     new RateLimit({
-      store: new RateLimitRedisStore({
+      store: new RateLimitRadisStore({
         client: redis
       }),
       windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-      delayMs: 0 // disable delaying - full speed until the max limit is reached
+      max: 100 // limit each IP to 100 requests per windowMs
     })
   );
 
@@ -57,27 +62,87 @@ export const startServer = async () => {
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
       }
-    } as any)
+    })
   );
 
   const cors = {
     credentials: true,
-    origin:
-      process.env.NODE_ENV === "test"
-        ? "*"
-        : (process.env.FRONTEND_HOST as string)
+    origin: process.env.NODE_ENV === "test" ? "*" : (process.env.FRONTEND_HOST as string)
   };
 
   server.express.get("/confirm/:id", confirmEmail);
 
-  if (process.env.NODE_ENV === "test") {
-    await createTestConn(true);
-  } else {
-    await createTypeormConn();
-  }
+  // const connection = await createTypeormConnection();
+  await createTypeormConnection();
+
+  // passport.use(
+  //   new GoogleStrategy(
+  //     {
+  //       clientID: process.env.GOOGLE_CLIENT_ID as string,
+  //       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+  //       callbackURL: "http://localhost:4000/auth/google/callback",
+  //       includeEmail: true
+  //     },
+  //     async (_: any, __: any, profile: any, cb: any) => {
+  //       const { id, emails } = profile;
+
+  //       const query = connection
+  //         .getRepository(User)
+  //         .createQueryBuilder("user")
+  //         .where("user.googleId = :id", { id });
+
+  //       let email: string | null = null;
+
+  //       if (emails) {
+  //         email = emails[0].value;
+
+  //         query.orWhere("user.email = :email", { email });
+  //       }
+
+  //       let user = await query.getOne();
+  //       console.log('user', user)
+
+  //       // this user needs to be registered
+  //       if (!user) {
+  //         user = await User.create({
+  //           googleId: id,
+  //           email
+  //         }).save();
+  //       } else if (!user.googleId) {
+  //         // metge account
+  //         user.googleId = id;
+  //         user.save();
+  //       } else {
+  //         // we have a twitter id
+  //         // login
+  //       }
+
+  //       return cb(null, { id: user.id });
+  //     }
+  //   )
+  // );
+
+  // server.express.use(passport.initialize());
+
+  // server.express.get(
+  //   "/auth/google",
+  //   passport.authenticate("google", { scope: ["profile", "email"] })
+  // );
+
+  // server.express.get(
+  //   "/auth/google/callback",
+  //   passport.authenticate("google", { session: false }),
+  //   (req, res) => {
+
+  //     (req.session as any).userId = req.user.id
+  //     // @todo redirect to frontend
+  //     res.redirect("/");
+  //   }
+  // );
+  const port = process.env.PORT || 4000;
   const app = await server.start({
     cors,
-    port: process.env.NODE_ENV === "test" ? 0 : 4000
+    port: process.env.NODE_ENV === "test" ? 0 : port
   });
   console.log("Server is running on localhost:4000");
 

@@ -18,7 +18,7 @@ export type Resolver = (
   info: any
 ) => any;
 
-export type GraphQLMiddlewareFunc = (
+export type GraphQLMiddleware = (
   resolver: Resolver,
   parent: any,
   args: any,
