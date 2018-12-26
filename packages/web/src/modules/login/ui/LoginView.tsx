@@ -14,6 +14,7 @@ interface FormValues {
 }
 
 interface Props {
+  onFinish: () => void;
   submit: (values: FormValues) => Promise<FormikErrors<FormValues> | null>;
 }
 
@@ -38,9 +39,9 @@ class C extends React.PureComponent<FormikProps<FormValues> & Props> {
           />
 
           <FormItem>
-            <a className="login-form-forgot" href="">
+            <Link className="login-form-forgot" to="/forgot-password">
               Forgot password
-            </a>
+            </Link>
           </FormItem>
           <Button
             type="primary"
@@ -70,6 +71,8 @@ export const Loginview = withFormik<Props, FormValues>({
     const errors = await props.submit(values);
     if (errors) {
       setErrors(errors);
+    } else {
+      props.onFinish();
     }
   }
 })(C);

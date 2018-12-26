@@ -1,12 +1,13 @@
+import { ApolloClient } from "apollo-client";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { createUploadLink } from "apollo-upload-client";
 
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
+const link = createUploadLink({
+  uri: process.env.REACT_APP_SERVER_URL,
+  credentials: "include"
+});
 
 export const client = new ApolloClient({
-  link: new HttpLink({
-      uri: process.env.REACT_APP_SERVER_URL,
-      credentials: 'include'
-    }),
+  link,
   cache: new InMemoryCache()
 });

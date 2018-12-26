@@ -1,7 +1,7 @@
 import * as nodemailer from "nodemailer";
 
 
-export const sendEmail = async (recipient: string, url: string) => {
+export const sendEmail = async (recipient: string, url: string, linkText: string) => {
 
 // Create a SMTP transporter object
 const transporter = nodemailer.createTransport({
@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
   text: "Hello to myself!",
   html: `<html>
               <body>
-                <a href="${url}">confirm email</a>j
+                <a href="${url}">${linkText}</a>j
               </body>
             </html>`
 };

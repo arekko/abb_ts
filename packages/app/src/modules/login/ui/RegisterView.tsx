@@ -38,9 +38,10 @@ class C extends React.PureComponent<FormikProps<FormValues> & Props> {
             containerStyle={{ width: "100%" }}
             autoCapitalize="none"
           />
+         
           <Button
             buttonStyle={{ marginTop: 30 }}
-            title="submit"
+            title="Register"
             onPress={handleSubmit as any}
           />
         </Card>

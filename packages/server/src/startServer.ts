@@ -1,7 +1,7 @@
 // import { User } from "./entity/User";
 import { redisSessionPrefix } from "./constants";
 import "reflect-metadata";
-
+import { applyMiddleware } from 'graphql-middleware'
 import "dotenv/config";
 
 // import * as dotenv from 'dotenv';
@@ -20,6 +20,7 @@ import { confirmEmail } from "./routes/confirmEmail";
 import { createTypeormConnection } from "./utils/createTypeormConnection";
 import { GraphQLServer } from "graphql-yoga";
 import { genSchema } from "./utils/genSchema";
+import { middleware } from './middleware';
 
 const RedisStore = connectRedis(session);
 const SESSION_SECRET = "fasdfasdfasdf";
@@ -27,8 +28,12 @@ const SESSION_SECRET = "fasdfasdfasdf";
 export const startServer = async () => {
   console.log(process.env.GOOGLE_CLIENT_ID);
 
+
+  const schema = genSchema() as any
+  applyMiddleware(schema, middleware)
+
   const server = new GraphQLServer({
-    schema: genSchema(),
+    schema,
     context: ({ request }) => ({
       redis,
       url: request.protocol + "://" + request.get("host"),

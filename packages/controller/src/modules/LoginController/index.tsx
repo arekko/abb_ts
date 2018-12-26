@@ -5,12 +5,17 @@ import { normalizeErrors } from "../../utils/normalizeErrors";
 import {
   LoginMutation,
   LoginMutationVariables
-} from "./__generated__/LoginMutation";
+} from "../../schemaTypes";
+import { normalizeErrorMap } from "../../types/NormalizeErrorMap";
 
 interface Props {
   onSessionid?: (sessionId: string) => void;
   children: (
-    data: { submit: (values: LoginMutationVariables) => Promise<any> }
+    data: {
+      submit: (
+        values: LoginMutationVariables
+      ) => Promise<normalizeErrorMap | null>;
+    }
   ) => JSX.Element | null;
 }
 
@@ -35,7 +40,7 @@ class C extends React.PureComponent<
     if (sessionId && this.props.onSessionid) {
       this.props.onSessionid(sessionId);
     }
-    
+
     return null;
   };
 

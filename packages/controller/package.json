@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rimraf ./dist && tsc",
     "schema:download": "apollo schema:download --endpoint=http://localhost:4000",
-    "codegen:generate": "apollo codegen:generate __generated__  --queries=./src/**/*.tsx --localSchemaFile=./schema.json --target=typescript",
+    "codegen:generate": "apollo codegen:generate --outputFlat=./src/schemaTypes.ts  --queries=./src/**/*.tsx --localSchemaFile=./schema.json --target=typescript",
     "gen-types": "npm run schema:download && npm run codegen:generate",
     "refresh:types": "npm run gen:types && npm run build"
   },
@@ -16,7 +16,8 @@
     "graphql-tag": "^2.10.0",
     "react": "^16.4.1",
     "react-apollo": "^2.3.2",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "react-router": "^4.3.1"
   },
   "devDependencies": {
     "@types/node": "^10.3.4",

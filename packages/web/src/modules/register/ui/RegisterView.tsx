@@ -1,11 +1,9 @@
 import { validUserSchema } from "@abb/common";
 import * as React from "react";
-import { Form as AntForm , Icon, Button,}from "antd";
+import { Form as AntForm, Icon, Button } from "antd";
 import { withFormik, FormikErrors, FormikProps, Field, Form } from "formik";
 import { InputField } from "../../shared/InputField";
 import { Link } from "react-router-dom";
-
-
 
 // const { Form: AntForm, Icon, Button } = Antd;
 const FormItem = AntForm.Item;
@@ -16,13 +14,14 @@ interface FormValues {
 }
 
 interface Props {
+  onFinish: () => void;
   submit: (values: FormValues) => Promise<FormikErrors<FormValues> | null>;
 }
 
 class C extends React.PureComponent<FormikProps<FormValues> & Props> {
   render() {
     return (
-      <Form style={{ display: "flex" }} >
+      <Form style={{ display: "flex" }}>
         <div style={{ width: 400, margin: "auto" }}>
           <Field
             name="email"
@@ -40,9 +39,9 @@ class C extends React.PureComponent<FormikProps<FormValues> & Props> {
           />
 
           <FormItem>
-            <a className="login-form-forgot" href="">
+            <Link className="login-form-forgot" to="/forgot-password">
               Forgot password
-            </a>
+            </Link>
           </FormItem>
           <Button
             type="primary"
@@ -60,7 +59,6 @@ class C extends React.PureComponent<FormikProps<FormValues> & Props> {
   }
 }
 
-
 export const RegisterView = withFormik<Props, FormValues>({
   validationSchema: validUserSchema,
   mapPropsToValues: props => ({
@@ -71,6 +69,8 @@ export const RegisterView = withFormik<Props, FormValues>({
     const errors = await props.submit(values);
     if (errors) {
       setErrors(errors);
+    } else {
+      props.onFinish();
     }
   }
 })(C);
