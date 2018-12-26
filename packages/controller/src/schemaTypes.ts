@@ -70,10 +70,8 @@ export interface CreateListingMutationVariables {
 export interface FindListingsQuery_findListings {
   __typename: "Listing";
   id: string;
-  longitude: number;
-  pictureUrl: string;
-  amenities: string[] | null;
-  latitude: number;
+  name: string;
+  description: string;
 }
 
 export interface FindListingsQuery {
