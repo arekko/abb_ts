@@ -1,7 +1,7 @@
 // import { User } from "./entity/User";
 import { redisSessionPrefix } from "./constants";
 import "reflect-metadata";
-import { applyMiddleware } from 'graphql-middleware'
+import { applyMiddleware } from "graphql-middleware";
 import "dotenv/config";
 
 // import * as dotenv from 'dotenv';
@@ -11,7 +11,6 @@ import * as session from "express-session";
 import * as connectRedis from "connect-redis";
 import * as RateLimit from "express-rate-limit";
 import * as RateLimitRadisStore from "rate-limit-redis";
-
 // import * as passport from "passport";
 // import * as GoogleStrategy from "passport-google-oauth20";
 
@@ -20,25 +19,26 @@ import { confirmEmail } from "./routes/confirmEmail";
 import { createTypeormConnection } from "./utils/createTypeormConnection";
 import { GraphQLServer } from "graphql-yoga";
 import { genSchema } from "./utils/genSchema";
-import { middleware } from './middleware';
-
+import { middleware } from "./middleware";
+import * as express from "express";
+import { userLoader } from "./loaders/UserLoader";
 const RedisStore = connectRedis(session);
 const SESSION_SECRET = "fasdfasdfasdf";
 
 export const startServer = async () => {
-  console.log(process.env.GOOGLE_CLIENT_ID);
-
-
-  const schema = genSchema() as any
-  applyMiddleware(schema, middleware)
+  console.log(userLoader());
+  const schema = genSchema() as any;
+  applyMiddleware(schema, middleware);
 
   const server = new GraphQLServer({
     schema,
-    context: ({ request }) => ({
+    context: ({ request, response }) => ({
       redis,
       url: request.protocol + "://" + request.get("host"),
       session: request.session,
-      req: request
+      req: request,
+      res: response,
+      userLoader: userLoader()
     })
   });
 
@@ -70,9 +70,14 @@ export const startServer = async () => {
     })
   );
 
+  server.express.use("/images", express.static("images"));
+
   const cors = {
     credentials: true,
-    origin: process.env.NODE_ENV === "test" ? "*" : (process.env.FRONTEND_HOST as string)
+    origin:
+      process.env.NODE_ENV === "test"
+        ? "*"
+        : (process.env.FRONTEND_HOST as string)
   };
 
   server.express.get("/confirm/:id", confirmEmail);

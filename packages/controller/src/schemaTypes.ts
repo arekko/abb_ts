@@ -67,11 +67,19 @@ export interface CreateListingMutationVariables {
 // GraphQL query operation: FindListingsQuery
 // ====================================================
 
+export interface FindListingsQuery_findListings_owner {
+  __typename: "User";
+  id: string;
+  email: string;
+}
+
 export interface FindListingsQuery_findListings {
   __typename: "Listing";
   id: string;
   name: string;
   description: string;
+  pictureUrl: string;
+  owner: FindListingsQuery_findListings_owner;
 }
 
 export interface FindListingsQuery {
@@ -119,6 +127,17 @@ export interface LoginMutation {
 export interface LoginMutationVariables {
   email: string;
   password: string;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: LogoutMutation
+// ====================================================
+
+export interface LogoutMutation {
+  logout: boolean | null;
 }
 
 /* tslint:disable */

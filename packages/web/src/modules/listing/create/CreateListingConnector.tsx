@@ -5,7 +5,7 @@ import { Form as AntForm, Button } from "antd";
 import { Page1 } from "./ui/Page1";
 import { Page2 } from "./ui/Page2";
 import { Page3 } from "./ui/Page3";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, Link } from "react-router-dom";
 import { withCreateListing, WithCreateListing } from "@abb/controller";
 const FormItem = AntForm.Item;
 
@@ -67,6 +67,7 @@ export class C extends React.PureComponent<
         {({ isSubmitting }) => (
           <Form style={{ display: "flex" }}>
             <div style={{ width: 400, margin: "auto" }}>
+              <Link to="/logout">Logout</Link>
               <FormItem>
                 {pages[this.state.page]}
                 <div

@@ -9,7 +9,7 @@ export const DropZoneField: React.SFC<FieldProps<any>> = ({
 }) => {
   return (
     <Dropzone
-      accept="./image/jpeg, image/png"
+      accept="image/jpeg, image/png, image/jpg"
       multiple={false}
       // tslint:disable-next-line:jsx-no-lambda
       onDrop={([file]) => {
