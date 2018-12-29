@@ -1,16 +1,15 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   BaseEntity,
+  PrimaryGeneratedColumn,
   ManyToOne
 } from "typeorm";
 import { User } from "./User";
 
-@Entity("listing")
+@Entity("listings")
 export class Listing extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: string;
+  @PrimaryGeneratedColumn("uuid") id: string;
 
   @Column("varchar", { length: 100 })
   name: string;
@@ -18,8 +17,7 @@ export class Listing extends BaseEntity {
   @Column("varchar", { length: 100 })
   category: string;
 
-  @Column("text")
-  pictureUrl: string;
+  @Column("text") pictureUrl: string;
 
   @Column("varchar", { length: 255 })
   description: string;
@@ -31,6 +29,7 @@ export class Listing extends BaseEntity {
   @Column("int") guests: number;
 
   @Column("double precision") latitude: number;
+
   @Column("double precision") longitude: number;
 
   @Column("text", { array: true })

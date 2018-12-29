@@ -1,12 +1,13 @@
 import * as React from "react";
 
-import { Formik, Field } from "formik";
+import { Formik, Field, FormikActions } from "formik";
 import { withCreateListing, WithCreateListing } from "@abb/controller";
 import { RouteComponentProps } from "react-router-native";
 import { Text, View, ScrollView } from "react-native";
 import { InputField } from "../../shared/InputField";
 import { Button } from "react-native-elements";
 import { CheckboxGroupField } from "../../shared/CheckboxGroupField";
+import { PictureField } from "../../shared/PictureField";
 
 interface State {
   page: number;
@@ -30,12 +31,18 @@ export class C extends React.PureComponent<
   State
 > {
   submit = async (
-    values: FormValues
-    // { setSubmitting }: FormikActions<FormValues>
+    { price, beds, guests, latitude, longitude, ...values }: FormValues,
+    { setSubmitting }: FormikActions<FormValues>
   ) => {
-    console.log(values);
-    // await this.props.createListing(values);
-    // setSubmitting(false);
+    await this.props.createListing({
+      price: parseInt(price, 10),
+      beds: parseInt(beds, 10),
+      guests: parseInt(guests, 10),
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+      ...values
+    });
+    setSubmitting(false);
   };
 
   render() {
@@ -57,11 +64,16 @@ export class C extends React.PureComponent<
       >
         {({ handleSubmit }) => (
           <View style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <ScrollView style={{ padding: 20, marginTop: 20 }}>
+            <ScrollView style={{ paddingHorizontal: 20, marginTop: 20 }}>
               <Text style={{ fontSize: 30, marginBottom: 10 }}>
                 Create Listing
               </Text>
               <Field name="name" placeholder="Name" component={InputField} />
+              <Field
+                name="picture"
+                title="pick a picture"
+                component={PictureField}
+              />
               <Field
                 name="category"
                 placeholder="Category"

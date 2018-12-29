@@ -24,21 +24,25 @@ import * as express from "express";
 import { userLoader } from "./loaders/UserLoader";
 const RedisStore = connectRedis(session);
 const SESSION_SECRET = "fasdfasdfasdf";
+import { RedisPubSub } from "graphql-redis-subscriptions";
 
 export const startServer = async () => {
   console.log(userLoader());
   const schema = genSchema() as any;
   applyMiddleware(schema, middleware);
 
+  const pubsub = new RedisPubSub();
+
   const server = new GraphQLServer({
     schema,
     context: ({ request, response }) => ({
       redis,
-      url: request.protocol + "://" + request.get("host"),
-      session: request.session,
+      url: request ? request.protocol + "://" + request.get("host") : "",
+      session: request ? request.session : undefined,
       req: request,
       res: response,
-      userLoader: userLoader()
+      userLoader: userLoader(),
+      pubsub
     })
   });
 

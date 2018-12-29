@@ -27,6 +27,7 @@
       "projectRoots": "",
       "sourceExts": ["ts", "tsx"],
       "transformer": "node_modules/react-native-typescript-transformer/index.js"
-    }
+    },
+    "android.permissions": ["READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE"]
   }
 }

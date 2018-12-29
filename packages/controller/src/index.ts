@@ -8,3 +8,4 @@ export * from "./modules/auth/AuthRoute";
 export * from "./modules/CreateListing";
 export * from "./modules/FindListings";
 export * from "./modules/LogoutController";
+export * from "./modules/ViewController";
