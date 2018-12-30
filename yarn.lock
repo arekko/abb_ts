@@ -996,6 +996,11 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/googlemaps@*":
+  version "3.30.16"
+  resolved "https://registry.yarnpkg.com/@types/googlemaps/-/googlemaps-3.30.16.tgz#3264d5ef7c3a92fab2a9f00e09e3247866ff3532"
+  integrity sha512-6OZ64ahLzYfzuSr71y4jAHZXiwxjvvEM2bfF2tzjIc9KUZVbO30SkYa8WewTsR8aM5BFz/uBiNlZ14eRLXYS0g==
+
 "@types/graphql-deduplicator@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/graphql-deduplicator/-/graphql-deduplicator-2.0.0.tgz#9e577b8f3feb3d067b0ca756f4a1fb356d533922"
@@ -1102,6 +1107,14 @@
   resolved "https://registry.yarnpkg.com/@types/react-dropzone/-/react-dropzone-4.2.2.tgz#af0a2595169700c8ab1114e9096285499beaff40"
   integrity sha512-okO6HY+w7V0uHoy6JpLY6BwY/s/oObtXZmUQdX0ycjPeLhK8Af/xf79CFkLA1fM6oVp16n1d962ejdkEXk375Q==
   dependencies:
+    "@types/react" "*"
+
+"@types/react-geosuggest@^2.7.8":
+  version "2.7.8"
+  resolved "https://registry.yarnpkg.com/@types/react-geosuggest/-/react-geosuggest-2.7.8.tgz#f3753cb04194f2124cbbca912619c3e36f8db4db"
+  integrity sha512-i1qYuzSdX5HXl44YDdMTGuBYyseozVCFb44IKzNnriRB/sksGjSDc5t+HV1S9B/oUMqsmtL+7gLEDBXi/IvX0g==
+  dependencies:
+    "@types/googlemaps" "*"
     "@types/react" "*"
 
 "@types/react-native@*":
@@ -9593,7 +9606,7 @@ lodash.clonedeep@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
-lodash.debounce@^4.0.0, lodash.debounce@^4.0.8:
+lodash.debounce@^4.0.0, lodash.debounce@^4.0.6, lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
@@ -12705,6 +12718,14 @@ react-fast-compare@^2.0.1:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
+
+react-geosuggest@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/react-geosuggest/-/react-geosuggest-2.9.0.tgz#9fde3d6c8331f75cd73561e885907076121cd310"
+  integrity sha512-U9MUYXK+kgC+zL2r8gdfWaCpwmYSzU4w6Auzg5bi4phVWpnPcBCxpdGr1iVL6+nxybw6IzSPJlR+UXahb34PKQ==
+  dependencies:
+    classnames "^2.2.6"
+    lodash.debounce "^4.0.6"
 
 react-google-maps@^7.3.0:
   version "7.3.0"

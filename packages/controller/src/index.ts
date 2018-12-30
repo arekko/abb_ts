@@ -9,3 +9,5 @@ export * from "./modules/CreateListing";
 export * from "./modules/FindListings";
 export * from "./modules/LogoutController";
 export * from "./modules/ViewController";
+export * from "./modules/ViewMessages";
+export * from "./modules/CreateMessage";

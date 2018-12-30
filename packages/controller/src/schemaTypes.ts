@@ -64,6 +64,21 @@ export interface CreateListingMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateMessageMutation
+// ====================================================
+
+export interface CreateMessageMutation {
+  createMessage: boolean;
+}
+
+export interface CreateMessageMutationVariables {
+  message: MessageInput;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FindListingsQuery
 // ====================================================
 
@@ -195,9 +210,42 @@ export interface ViewListingQueryVariables {
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
+// ====================================================
+// GraphQL query operation: ViewMessagesQuery
+// ====================================================
+
+export interface ViewMessagesQuery_messages_user {
+  __typename: "User";
+  email: string;
+  id: string;
+}
+
+export interface ViewMessagesQuery_messages {
+  __typename: "Message";
+  text: string;
+  user: ViewMessagesQuery_messages_user;
+  listingId: string;
+}
+
+export interface ViewMessagesQuery {
+  messages: ViewMessagesQuery_messages[] | null;
+}
+
+export interface ViewMessagesQueryVariables {
+  listingId: string;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export interface MessageInput {
+  text: string;
+  listingId: string;
+}
 
 //==============================================================
 // END Enums and Input Objects
