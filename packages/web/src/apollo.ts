@@ -12,7 +12,7 @@ const httpLink = createUploadLink({
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000/`,
+  uri: process.env.REACT_APP_SERVER_WS_URL as string,
   options: {
     reconnect: true
   }
