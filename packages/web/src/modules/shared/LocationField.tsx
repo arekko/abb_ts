@@ -2,7 +2,41 @@ import * as React from "react";
 import { FieldProps } from "formik";
 import Geosuggest, { Suggest } from "react-geosuggest";
 import "./geo.css";
-export class LocationField extends React.PureComponent<FieldProps<any> & {}> {
+
+import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+
+interface DefaultCenter {
+  lat: number;
+  lng: number;
+}
+
+interface State {
+  defaultCenter: DefaultCenter | null;
+}
+
+const MapWithAMarker = withGoogleMap<{
+  defaultCenter: DefaultCenter;
+  lat: number;
+  lng: number;
+  onClick: (e: google.maps.MouseEvent) => void;
+}>(props => (
+  <GoogleMap
+    defaultZoom={8}
+    defaultCenter={props.defaultCenter}
+    onClick={props.onClick}
+  >
+    <Marker position={{ lat: props.lat, lng: props.lng }} />
+  </GoogleMap>
+));
+
+export class LocationField extends React.PureComponent<
+  FieldProps<any> & {},
+  State
+> {
+  state: State = {
+    defaultCenter: null
+  };
+
   onSuggestSelect = (place: Suggest) => {
     const {
       location: { lat, lng }
@@ -16,11 +50,17 @@ export class LocationField extends React.PureComponent<FieldProps<any> & {}> {
       longitude: lng
     });
     console.log(place);
+    this.setState({
+      defaultCenter: {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng)
+      }
+    });
   };
 
   render() {
     const {
-      form: { values }
+      form: { values, setValues }
     } = this.props;
 
     return (
@@ -33,6 +73,25 @@ export class LocationField extends React.PureComponent<FieldProps<any> & {}> {
         />
         <div>{values.longitude}</div>
         <div>{values.latitude}</div>
+        {this.state.defaultCenter && (
+          <MapWithAMarker
+            containerElement={<div style={{ height: `400px` }} />}
+            mapElement={<div style={{ height: `100%` }} />}
+            defaultCenter={this.state.defaultCenter}
+            lat={values.latitude}
+            lng={values.longitude}
+            // tslint:disable-next-line:jsx-no-lambda
+            onClick={x => {
+              const lat = x.latLng.lat();
+              const lng = x.latLng.lng();
+              setValues({
+                ...values,
+                latitude: lat,
+                longitude: lng
+              });
+            }}
+          />
+        )}
       </div>
     );
   }
