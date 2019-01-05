@@ -10,7 +10,7 @@
     "apollo-client": "^2.4.7",
     "apollo-link-http": "^1.5.9",
     "apollo-upload-client": "^10.0.0",
-    "expo": "^27.0.1",
+    "expo": "^32.0.0",
     "formik": "^1.4.1",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",

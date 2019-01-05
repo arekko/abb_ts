@@ -11,11 +11,11 @@ const Routes = () => (
     <Switch>
       <Route exact={true} path="/register" component={RegisterConnector} />
       <Route exact={true} path="/login" component={LoginConnector} />
-      <Route
+      {/* <Route
         exact={true}
         path="/listing/create"
         component={CreateListingConnector}
-      />
+      /> */}
       <Route
         exact={true}
         path="/listing/find"
