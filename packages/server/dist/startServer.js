@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("./constants");
 require("reflect-metadata");
+const graphql_middleware_1 = require("graphql-middleware");
 require("dotenv/config");
 const session = require("express-session");
 const connectRedis = require("connect-redis");
@@ -20,17 +21,27 @@ const confirmEmail_1 = require("./routes/confirmEmail");
 const createTypeormConnection_1 = require("./utils/createTypeormConnection");
 const graphql_yoga_1 = require("graphql-yoga");
 const genSchema_1 = require("./utils/genSchema");
+const middleware_1 = require("./middleware");
+const express = require("express");
+const UserLoader_1 = require("./loaders/UserLoader");
 const RedisStore = connectRedis(session);
 const SESSION_SECRET = "fasdfasdfasdf";
+const graphql_redis_subscriptions_1 = require("graphql-redis-subscriptions");
 exports.startServer = () => __awaiter(this, void 0, void 0, function* () {
-    console.log(process.env.GOOGLE_CLIENT_ID);
+    console.log(UserLoader_1.userLoader());
+    const schema = genSchema_1.genSchema();
+    graphql_middleware_1.applyMiddleware(schema, middleware_1.middleware);
+    const pubsub = new graphql_redis_subscriptions_1.RedisPubSub();
     const server = new graphql_yoga_1.GraphQLServer({
-        schema: genSchema_1.genSchema(),
-        context: ({ request }) => ({
+        schema,
+        context: ({ request, response }) => ({
             redis: redis_1.redis,
-            url: request.protocol + "://" + request.get("host"),
-            session: request.session,
-            req: request
+            url: request ? request.protocol + "://" + request.get("host") : "",
+            session: request ? request.session : undefined,
+            req: request,
+            res: response,
+            userLoader: UserLoader_1.userLoader(),
+            pubsub
         })
     });
     server.express.use(new RateLimit({
@@ -55,9 +66,12 @@ exports.startServer = () => __awaiter(this, void 0, void 0, function* () {
             maxAge: 1000 * 60 * 60 * 24 * 7
         }
     }));
+    server.express.use("/images", express.static("images"));
     const cors = {
         credentials: true,
-        origin: process.env.NODE_ENV === "test" ? "*" : process.env.FRONTEND_HOST
+        origin: process.env.NODE_ENV === "test"
+            ? "*"
+            : process.env.FRONTEND_HOST
     };
     server.express.get("/confirm/:id", confirmEmail_1.confirmEmail);
     yield createTypeormConnection_1.createTypeormConnection();

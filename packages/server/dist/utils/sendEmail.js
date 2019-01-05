@@ -8,30 +8,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const SparkPost = require("sparkpost");
-const client = new SparkPost(process.env.SPARKPOST_API_KEY);
-exports.sendEmail = (recipient, url) => __awaiter(this, void 0, void 0, function* () {
-    console.log('we are sending email');
-    const response = yield client.transmissions.send({
-        options: {
-            sandbox: true
-        },
-        content: {
-            from: 'testing@sparkpostbox.com',
-            subject: 'Confirm email',
-            html: `<html>
+const nodemailer = require("nodemailer");
+exports.sendEmail = (recipient, url, linkText) => __awaiter(this, void 0, void 0, function* () {
+    const transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        auth: {
+            user: "ke4kpdql5t53eewd@ethereal.email",
+            pass: "NADPCp5VwwesZ1fwZN"
+        }
+    });
+    const message = {
+        from: "Sender Name <sender@example.com>",
+        to: `Recipient <${recipient}>`,
+        subject: "Nodemailer is unicode friendly ✔",
+        text: "Hello to myself!",
+        html: `<html>
               <body>
-                <p>
-                  Testing SparkPost - the world\'s most awesomest email service!
-                </p>
-                <a href="${url}">confirm email</a>j
+                <a href="${url}">${linkText}</a>j
               </body>
             </html>`
-        },
-        recipients: [
-            { address: recipient }
-        ]
+    };
+    transporter.sendMail(message, (err, info) => {
+        if (err) {
+            console.log("Error occurred. " + err.message);
+        }
+        console.log("Message sent: %s", info.messageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     });
-    console.log(response);
 });
 //# sourceMappingURL=sendEmail.js.map

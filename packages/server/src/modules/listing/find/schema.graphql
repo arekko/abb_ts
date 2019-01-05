@@ -8,7 +8,7 @@ type Listing {
   guests: Int!
   latitude: Float!
   longitude: Float!
-  amenities: [String!]
+  amenities: [String!]!
   pictureUrl: String!
   owner: User!
 }

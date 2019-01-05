@@ -1,17 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const graphql_import_1 = require("graphql-import");
+const merge_graphql_schemas_1 = require("merge-graphql-schemas");
 const path = require("path");
 const fs = require("fs");
 const graphql_tools_1 = require("graphql-tools");
+const glob = require("glob");
 exports.genSchema = () => {
-    const schemas = [];
-    const folders = fs.readdirSync(path.join(__dirname, "../modules"));
-    folders.forEach(folder => {
-        const { resolvers } = require(`../modules/${folder}/resolvers`);
-        const typeDefs = graphql_import_1.importSchema(path.join(__dirname, `../modules/${folder}/schema.graphql`));
-        schemas.push(graphql_tools_1.makeExecutableSchema({ resolvers, typeDefs }));
+    const pathToModules = path.join(__dirname, "../modules");
+    const graphqlTypes = glob
+        .sync(`${pathToModules}/**/*.graphql`)
+        .map(x => fs.readFileSync(x, { encoding: "utf8" }));
+    const resolvers = glob
+        .sync(`${pathToModules}/**/resolvers.?s`)
+        .map(resolver => require(resolver).resolvers);
+    return graphql_tools_1.makeExecutableSchema({
+        typeDefs: merge_graphql_schemas_1.mergeTypes(graphqlTypes),
+        resolvers: merge_graphql_schemas_1.mergeResolvers(resolvers)
     });
-    return graphql_tools_1.mergeSchemas({ schemas });
 };
 //# sourceMappingURL=genSchema.js.map

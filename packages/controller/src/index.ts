@@ -11,3 +11,4 @@ export * from "./modules/LogoutController";
 export * from "./modules/ViewController";
 export * from "./modules/ViewMessages";
 export * from "./modules/CreateMessage";
+export * from "./modules/UpdateListing";

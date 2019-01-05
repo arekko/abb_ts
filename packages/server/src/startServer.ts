@@ -1,5 +1,5 @@
 // import { User } from "./entity/User";
-import { redisSessionPrefix } from "./constants";
+import { redisSessionPrefix, listingCacheKey } from "./constants";
 import "reflect-metadata";
 import { applyMiddleware } from "graphql-middleware";
 import "dotenv/config";
@@ -25,6 +25,7 @@ import { userLoader } from "./loaders/UserLoader";
 const RedisStore = connectRedis(session);
 const SESSION_SECRET = "fasdfasdfasdf";
 import { RedisPubSub } from "graphql-redis-subscriptions";
+import { Listing } from "./entity/Listing";
 
 export const startServer = async () => {
   console.log(userLoader());
@@ -89,70 +90,14 @@ export const startServer = async () => {
   // const connection = await createTypeormConnection();
   await createTypeormConnection();
 
-  // passport.use(
-  //   new GoogleStrategy(
-  //     {
-  //       clientID: process.env.GOOGLE_CLIENT_ID as string,
-  //       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-  //       callbackURL: "http://localhost:4000/auth/google/callback",
-  //       includeEmail: true
-  //     },
-  //     async (_: any, __: any, profile: any, cb: any) => {
-  //       const { id, emails } = profile;
+  // clear cache
+  await redis.del(listingCacheKey);
+  // fill key
+  const listings = await Listing.find();
+  const listingStrings = listings.map(x => JSON.stringify(x));
 
-  //       const query = connection
-  //         .getRepository(User)
-  //         .createQueryBuilder("user")
-  //         .where("user.googleId = :id", { id });
+  await redis.lpush(listingCacheKey, ...listingStrings);
 
-  //       let email: string | null = null;
-
-  //       if (emails) {
-  //         email = emails[0].value;
-
-  //         query.orWhere("user.email = :email", { email });
-  //       }
-
-  //       let user = await query.getOne();
-  //       console.log('user', user)
-
-  //       // this user needs to be registered
-  //       if (!user) {
-  //         user = await User.create({
-  //           googleId: id,
-  //           email
-  //         }).save();
-  //       } else if (!user.googleId) {
-  //         // metge account
-  //         user.googleId = id;
-  //         user.save();
-  //       } else {
-  //         // we have a twitter id
-  //         // login
-  //       }
-
-  //       return cb(null, { id: user.id });
-  //     }
-  //   )
-  // );
-
-  // server.express.use(passport.initialize());
-
-  // server.express.get(
-  //   "/auth/google",
-  //   passport.authenticate("google", { scope: ["profile", "email"] })
-  // );
-
-  // server.express.get(
-  //   "/auth/google/callback",
-  //   passport.authenticate("google", { session: false }),
-  //   (req, res) => {
-
-  //     (req.session as any).userId = req.user.id
-  //     // @todo redirect to frontend
-  //     res.redirect("/");
-  //   }
-  // );
   const port = process.env.PORT || 4000;
   const app = await server.start({
     cors,

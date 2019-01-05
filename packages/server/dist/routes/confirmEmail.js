@@ -18,7 +18,7 @@ exports.confirmEmail = (req, res) => __awaiter(this, void 0, void 0, function* (
     if (userId) {
         yield User_1.User.update({ id: userId }, { confirmed: true });
         yield redis_1.redis.del(id);
-        res.send("ok");
+        res.redirect(`${process.env.FRONTEND_HOST}/login`);
     }
     else {
         res.send("invalid");

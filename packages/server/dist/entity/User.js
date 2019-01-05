@@ -17,27 +17,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const typeorm_1 = require("typeorm");
 const bcrypt = require("bcryptjs");
+const typeorm_1 = require("typeorm");
+const Listing_1 = require("./Listing");
 let User = class User extends typeorm_1.BaseEntity {
-    hashPassword() {
+    hashPasswordBeforeInsert() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.password) {
-                this.password = yield bcrypt.hash(this.password, 10);
-            }
+            this.password = yield bcrypt.hash(this.password, 10);
         });
     }
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    typeorm_1.PrimaryGeneratedColumn("uuid"),
     __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column("varchar", { length: 255, nullable: true }),
-    __metadata("design:type", Object)
+    typeorm_1.Column("varchar", { length: 255 }),
+    __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    typeorm_1.Column("text", { nullable: true }),
+    typeorm_1.Column("text"),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
@@ -49,15 +48,15 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "forgotPasswordLocked", void 0);
 __decorate([
-    typeorm_1.Column("text", { nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "googleId", void 0);
+    typeorm_1.OneToMany(() => Listing_1.Listing, listing => listing.user),
+    __metadata("design:type", Array)
+], User.prototype, "listings", void 0);
 __decorate([
     typeorm_1.BeforeInsert(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], User.prototype, "hashPassword", null);
+], User.prototype, "hashPasswordBeforeInsert", null);
 User = __decorate([
     typeorm_1.Entity("users")
 ], User);
